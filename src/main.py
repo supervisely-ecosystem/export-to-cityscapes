@@ -39,10 +39,9 @@ def from_ann_to_cityscapes_mask(ann, name2id):
             contours = poly_for_contours.exterior_np.tolist()
         else:
             contours = label.geometry.exterior_np.tolist()
-        cityscapes_contours = [cnt[::-1] for cnt in contours]
 
+        cityscapes_contours = list(map(lambda cnt: cnt[::-1], contours))
         poly_json['objects'].append({'label': label.obj_class.name, 'polygon': cityscapes_contours})
-
 
     return mask_color, mask_label, poly_json
 
@@ -73,9 +72,8 @@ def from_sl_to_cityscapes(api: sly.Api, task_id, context, state, app_logger):
         for idx, obj_class in enumerate(meta.obj_classes):
             name2id[obj_class.name] = (idx + 1, idx + 1, idx + 1)
             file.write(str(idx + 1) + '\t' * 2 + obj_class.name + '\n')
-            
-    app_logger.info("Create palette, it will be save in class_to_id.txt file")
 
+    app_logger.info("Create palette, it will be save in class_to_id.txt file")
 
     datasets = api.dataset.get_list(PROJECT_ID)
     for dataset in datasets:
