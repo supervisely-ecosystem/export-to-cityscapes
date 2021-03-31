@@ -1,0 +1,17 @@
+{
+  "name": "yolo-v5-serve",
+  "type": "app",
+  "categories": [
+    "Images"
+  ],
+  "description": "Detect items on image",
+  "docker_image": "supervisely/base-py-sdk:6",
+  "main_script": "src/main.py",
+  "task_location": "application_sessions",
+  "icon": "https://img.icons8.com/color/96/000000/group.png",
+  "icon_background": "#FFFFFF",
+  "headless": true,
+  "context_menu": {
+    "target": ["images_project"]   
+  }
+}
