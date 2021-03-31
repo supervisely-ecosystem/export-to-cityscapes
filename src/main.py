@@ -2,7 +2,7 @@ import os
 import numpy as np
 import supervisely_lib as sly
 from supervisely_lib.imaging.image import write
-from supervisely_lib.io.fs import mkdir, get_file_name
+from supervisely_lib.io.fs import mkdir, get_file_name, get_file_ext
 from supervisely_lib.io.json import dump_json_file
 
 
@@ -65,19 +65,20 @@ def from_sl_to_cityscapes(api: sly.Api, task_id, context, state, app_logger):
         images = api.image.get_list(dataset.id)
         for batch in sly.batched(images):
             image_ids = [image_info.id for image_info in batch]
-            image_names = [image_info.name for image_info in batch]
+            base_image_names = [image_info.name for image_info in batch]
+            image_names = [get_file_name(image_info.name) + '_leftImg8bit' + get_file_ext(image_info.name) for image_info in batch]
             image_paths = [os.path.join(images_dir_path, image_name) for image_name in image_names]
             api.image.download_paths(dataset.id, image_ids, image_paths)
 
             ann_infos = api.annotation.download_batch(dataset.id, image_ids)
             anns = [sly.Annotation.from_json(ann_info.annotation, meta) for ann_info in ann_infos]
 
-            for ann, image_name in zip(anns, image_names):
+            for ann, image_name in zip(anns, base_image_names):
                 mask_color, mask_label, poly_json = from_ann_to_cityscapes_mask(ann, name2id)
 
-                dump_json_file(poly_json, os.path.join(annotations_dir_path, get_file_name(image_name) + '_polygons.json'))
-                write(os.path.join(annotations_dir_path, get_file_name(image_name) + '_color.png'), mask_color)
-                write(os.path.join(annotations_dir_path, get_file_name(image_name) + '_labelIds.png'), mask_label)
+                dump_json_file(poly_json, os.path.join(annotations_dir_path, get_file_name(image_name) + '_gtFine_polygons.json'))
+                write(os.path.join(annotations_dir_path, get_file_name(image_name) + '_gtFine_color.png'), mask_color)
+                write(os.path.join(annotations_dir_path, get_file_name(image_name) + '_gtFine_labelIds.png'), mask_label)
 
         progress.iter_done_report()
 
