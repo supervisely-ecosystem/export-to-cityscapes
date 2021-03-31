@@ -1,10 +1,10 @@
 {
-  "name": "yolo-v5-serve",
+  "name": "export-to-cityscapes",
   "type": "app",
   "categories": [
     "Images"
   ],
-  "description": "Detect items on image",
+  "description": "Convert supervisely to cityscapes",
   "docker_image": "supervisely/base-py-sdk:6",
   "main_script": "src/main.py",
   "task_location": "application_sessions",
