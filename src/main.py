@@ -26,19 +26,29 @@ cityscapes_labels_suffix = '_gtFine_labelIds.png'
 possible_geometries = [Bitmap, Polygon]
 
 
-
-def from_ann_to_cityscapes_mask(ann, name2id):
+def from_ann_to_cityscapes_mask(ann, name2id, app_logger):
     mask_color = np.zeros((ann.img_size[0], ann.img_size[1], 3), dtype=np.uint8)
     mask_label = np.zeros((ann.img_size[0], ann.img_size[1], 3), dtype=np.uint8)
     poly_json = {'imgHeight': ann.img_size[0], 'imgWidth': ann.img_size[1], 'objects': []}
+
     for label in ann.labels:
         label.geometry.draw(mask_color, label.obj_class.color)
         label.geometry.draw(mask_label, name2id[label.obj_class.name])
         if type(label.geometry) == Bitmap:
             poly_for_contours = label.geometry.to_contours()[0]
-            contours = poly_for_contours.exterior_np.tolist()
         else:
-            contours = label.geometry.exterior_np.tolist()
+            poly_for_contours = label.geometry
+
+        if len(poly_for_contours.interior) > 0:
+            app_logger.info('Labeled objects must never have holes in cityscapes format, existing holes will be sketched')
+
+        contours = poly_for_contours.exterior_np.tolist()
+
+        if label.obj_class.name == 'out of roi':
+            for curr_interior in poly_for_contours.interior_np:
+                contours.append(poly_for_contours.exterior_np.tolist()[0])
+                contours.extend(curr_interior.tolist())
+                contours.append(curr_interior.tolist()[0])
 
         cityscapes_contours = list(map(lambda cnt: cnt[::-1], contours))
         poly_json['objects'].append({'label': label.obj_class.name, 'polygon': cityscapes_contours})
@@ -56,7 +66,6 @@ def from_sl_to_cityscapes(api: sly.Api, task_id, context, state, app_logger):
         if obj_class.geometry_type not in possible_geometries:
             raise ValueError('Only converting bitmap and polygon classes is possible, not {}'.format(obj_class.geometry_type))
 
-
     RESULT_ARCHIVE = os.path.join(my_app.data_dir, ARCHIVE_NAME)
     RESULT_DIR = os.path.join(my_app.data_dir, RESULT_DIR_NAME)
     result_images_dir = os.path.join(RESULT_DIR, images_dir_name, default_dir_save_results)
@@ -66,14 +75,19 @@ def from_sl_to_cityscapes(api: sly.Api, task_id, context, state, app_logger):
     app_logger.info("Make Cityscapes format dirs")
 
 
+    class_to_id = []
     name2id = {}
-    with open(os.path.join(RESULT_DIR, 'class_to_id.txt'), "w") as file:
-        file.write('id' + '\t' * 2  + 'name' + '\n' + '\n')
-        for idx, obj_class in enumerate(meta.obj_classes):
-            name2id[obj_class.name] = (idx + 1, idx + 1, idx + 1)
-            file.write(str(idx + 1) + '\t' * 2 + obj_class.name + '\n')
+    for idx, obj_class in enumerate(meta.obj_classes):
+        curr_class = {}
+        curr_class['label'] = obj_class.name
+        curr_class['label_id'] = idx + 1
+        curr_class['color'] = obj_class.color
+        class_to_id.append(curr_class)
+        name2id[obj_class.name] = (idx + 1, idx + 1, idx + 1)
 
-    app_logger.info("Create palette, it will be save in class_to_id.txt file")
+    dump_json_file(class_to_id, os.path.join(RESULT_DIR, 'class_to_id.json'))
+
+    app_logger.info("Create palette, it will be save in class_to_id.json file")
 
     datasets = api.dataset.get_list(PROJECT_ID)
     for dataset in datasets:
@@ -101,7 +115,7 @@ def from_sl_to_cityscapes(api: sly.Api, task_id, context, state, app_logger):
             anns = [sly.Annotation.from_json(ann_info.annotation, meta) for ann_info in ann_infos]
 
             for ann, image_name in zip(anns, base_image_names):
-                mask_color, mask_label, poly_json = from_ann_to_cityscapes_mask(ann, name2id)
+                mask_color, mask_label, poly_json = from_ann_to_cityscapes_mask(ann, name2id, app_logger)
 
                 dump_json_file(poly_json, os.path.join(annotations_dir_path, get_file_name(image_name) + cityscapes_polygons_suffix))
                 write(os.path.join(annotations_dir_path, get_file_name(image_name) + cityscapes_color_suffix), mask_color)
