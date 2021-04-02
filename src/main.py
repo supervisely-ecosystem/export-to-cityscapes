@@ -8,6 +8,7 @@ from supervisely_lib.geometry.bitmap import Bitmap
 from supervisely_lib.geometry.polygon import Polygon
 from PIL import Image
 
+
 my_app = sly.AppService()
 
 TEAM_ID = int(os.environ['context.teamId'])
@@ -25,29 +26,27 @@ cityscapes_polygons_suffix = '_gtFine_polygons.json'
 cityscapes_color_suffix = '_gtFine_color.png'
 cityscapes_labels_suffix = '_gtFine_labelIds.png'
 possible_geometries = [Bitmap, Polygon]
-train_to_val_test_coef = 3 / 5
-val_test_coef = round((1 - train_to_val_test_coef) / 2, 1)
+possible_tags = ['train', 'val', 'test']
+splitter_coef = 3 / 5
+if splitter_coef > 1 or splitter_coef < 0:
+    raise ValueError('train_to_val_test_coef should be between 0 and 1, your data is {}'.format(splitter_coef))
 
-if train_to_val_test_coef > 1 or train_to_val_test_coef < 0:
-    raise ValueError('train_to_val_test_coef should be between 0 and 1, your data is {}'.format(train_to_val_test_coef))
 
-
-def from_ann_to_cityscapes_mask(ann, name2id, app_logger, test_flag):
+def from_ann_to_cityscapes_mask(ann, name2id, app_logger, train_val_flag):
     mask_color = np.zeros((ann.img_size[0], ann.img_size[1], 3), dtype=np.uint8)
     mask_label = np.zeros((ann.img_size[0], ann.img_size[1], 3), dtype=np.uint8)
     poly_json = {'imgHeight': ann.img_size[0], 'imgWidth': ann.img_size[1], 'objects': []}
-    if test_flag:
-        return mask_color, mask_label, poly_json
 
     for label in ann.labels:
-        label.geometry.draw(mask_color, label.obj_class.color)
+        if train_val_flag:
+            label.geometry.draw(mask_color, label.obj_class.color)
         label.geometry.draw(mask_label, name2id[label.obj_class.name])
         if type(label.geometry) == Bitmap:
             poly_for_contours = label.geometry.to_contours()[0]
         else:
             poly_for_contours = label.geometry
 
-        if len(poly_for_contours.interior) > 0:
+        if len(poly_for_contours.interior) > 0 and label.obj_class.name != 'out of roi':
             app_logger.info('Labeled objects must never have holes in cityscapes format, existing holes will be sketched')
 
         contours = poly_for_contours.exterior_np.tolist()
@@ -64,10 +63,42 @@ def from_ann_to_cityscapes_mask(ann, name2id, app_logger, test_flag):
     return mask_color, mask_label, poly_json
 
 
+def image_ext_to_png(im_path):
+    if get_file_ext(im_path) != '.png':
+        im = Image.open(im_path).convert('RGB')
+        im.save(im_path[:-1 * len(get_file_ext(im_path))] + '.png')
+        silent_remove(im_path)
+
+
+def get_tags_splitter(anns):
+    anns_without_possible_tags = 0
+    for ann in anns:
+        ann_tags = [tag.name for tag in ann.img_tags]
+        separator_tags = list(set(ann_tags) & set(possible_tags))
+        if len(separator_tags) == 0:
+            anns_without_possible_tags += 1
+    train_tags_cnt = round(anns_without_possible_tags * splitter_coef)
+    val_tags_cnt = round((anns_without_possible_tags - train_tags_cnt) / 2)
+    test_tags_cnt = anns_without_possible_tags - train_tags_cnt - val_tags_cnt
+    return {'train': train_tags_cnt, 'val': val_tags_cnt, 'test': test_tags_cnt}
+
+
 
 @my_app.callback("from_sl_to_cityscapes")
 @sly.timeit
 def from_sl_to_cityscapes(api: sly.Api, task_id, context, state, app_logger):
+
+    def get_image_and_ann():
+        mkdir(image_dir_path)
+        mkdir(ann_dir)
+        image_path = os.path.join(image_dir_path, image_name)
+        api.image.download_path(image_id, image_path)
+        image_ext_to_png(image_path)
+
+        mask_color, mask_label, poly_json = from_ann_to_cityscapes_mask(ann, name2id, app_logger, train_val_flag)
+        dump_json_file(poly_json, os.path.join(ann_dir, get_file_name(base_image_name) + cityscapes_polygons_suffix))
+        write(os.path.join(ann_dir, get_file_name(base_image_name) + cityscapes_color_suffix), mask_color)
+        write(os.path.join(ann_dir, get_file_name(base_image_name) + cityscapes_labels_suffix), mask_label)
 
     meta_json = api.project.get_meta(PROJECT_ID)
     meta = sly.ProjectMeta.from_json(meta_json)
@@ -83,14 +114,8 @@ def from_sl_to_cityscapes(api: sly.Api, task_id, context, state, app_logger):
     result_anns_train = os.path.join(RESULT_DIR, annotations_dir_name, default_dir_train)
     result_anns_val = os.path.join(RESULT_DIR, annotations_dir_name, default_dir_val)
     result_anns_test = os.path.join(RESULT_DIR, annotations_dir_name, default_dir_test)
-    sly.fs.mkdir(result_images_train)
-    sly.fs.mkdir(result_images_val)
-    sly.fs.mkdir(result_images_test)
-    sly.fs.mkdir(result_anns_train)
-    sly.fs.mkdir(result_anns_val)
-    sly.fs.mkdir(result_anns_test)
-    app_logger.info("Make Cityscapes format dirs")
-
+    sly.fs.mkdir(RESULT_DIR)
+    app_logger.info("Make Cityscapes dir")
 
     class_to_id = []
     name2id = {}
@@ -115,57 +140,58 @@ def from_sl_to_cityscapes(api: sly.Api, task_id, context, state, app_logger):
         anns_dir_path_train = os.path.join(result_anns_train, dataset.name)
         anns_dir_path_val = os.path.join(result_anns_val, dataset.name)
         anns_dir_path_test = os.path.join(result_anns_test, dataset.name)
-        mkdir(images_dir_path_train)
-        mkdir(images_dir_path_val)
-        mkdir(images_dir_path_test)
-        mkdir(anns_dir_path_train)
-        mkdir(anns_dir_path_val)
-        mkdir(anns_dir_path_test)
 
         images = api.image.get_list(dataset.id)
         if len(images) < 3:
-            app_logger.info('Number of images in {} dataset is less then 3, val and train dirs for this dataset may by empty'.format(dataset.name))
-        for batch in sly.batched(images):
-            image_ids = [image_info.id for image_info in batch]
-            base_image_names = [image_info.name for image_info in batch]
-            image_names = [get_file_name(image_info.name) + cityscapes_images_suffix + get_file_ext(image_info.name) for image_info in batch]
+            app_logger.info('Number of images in {} dataset is less then 3, val and train dirs for this dataset may be not created'.format(dataset.name))
 
-            train_length = round(len(image_names) * train_to_val_test_coef)
-            if len(batch) <= 3:
-                train_length = 1
-            image_paths_train = [os.path.join(images_dir_path_train, image_name) for image_name in image_names[:train_length]]
-            val_length = round(len(image_names) * val_test_coef) + train_length
-            image_paths_val = [os.path.join(images_dir_path_val, image_name) for image_name in image_names[train_length:val_length]]
-            image_paths_test = [os.path.join(images_dir_path_test, image_name) for image_name in image_names[val_length:]]
+        image_ids = [image_info.id for image_info in images]
+        base_image_names = [image_info.name for image_info in images]
+        image_names = [get_file_name(image_info.name) + cityscapes_images_suffix + get_file_ext(image_info.name) for image_info in images]
 
-            image_paths = image_paths_train + image_paths_val + image_paths_test
-            api.image.download_paths(dataset.id, image_ids, image_paths)
+        ann_infos = api.annotation.download_batch(dataset.id, image_ids)
+        anns = [sly.Annotation.from_json(ann_info.annotation, meta) for ann_info in ann_infos]
 
+        splitter = get_tags_splitter(anns)
 
-            for im_path in image_paths:
-                if get_file_ext(im_path) != '.png':
-                    im = Image.open(im_path).convert('RGB')
-                    im.save(im_path[:-1 * len(get_file_ext(im_path))] + '.png')
-                    silent_remove(im_path)
+        curr_splitter = {'train': 0, 'val': 0, 'test': 0}
+        for ann, image_id, image_name, base_image_name in zip(anns, image_ids, image_names, base_image_names):
+            train_val_flag = True
+            ann_tags = [tag.name for tag in ann.img_tags]
+            separator_tags=list(set(ann_tags) & set(possible_tags))
+            if len(separator_tags) > 1:
+                app_logger.info('There are more then one separator tag for {} image. {} tag will be used for split'.format(image_name, separator_tags[0]))
 
-            ann_infos = api.annotation.download_batch(dataset.id, image_ids)
-            anns = [sly.Annotation.from_json(ann_info.annotation, meta) for ann_info in ann_infos]
-
-            test_flag = False
-            for idx, (ann, image_name) in enumerate(zip(anns, base_image_names)):
-
-                if idx < train_length:
+            if len(separator_tags) >= 1:
+                if separator_tags[0] == 'train':
+                    image_dir_path = images_dir_path_train
                     ann_dir = anns_dir_path_train
-                elif idx >= train_length and idx < val_length:
+                elif separator_tags[0] == 'val':
+                    image_dir_path = images_dir_path_val
                     ann_dir = anns_dir_path_val
                 else:
+                    image_dir_path = images_dir_path_test
                     ann_dir = anns_dir_path_test
-                    test_flag = True
+                    train_val_flag = False
 
-                mask_color, mask_label, poly_json = from_ann_to_cityscapes_mask(ann, name2id, app_logger, test_flag)
-                dump_json_file(poly_json, os.path.join(ann_dir, get_file_name(image_name) + cityscapes_polygons_suffix))
-                write(os.path.join(ann_dir, get_file_name(image_name) + cityscapes_color_suffix), mask_color)
-                write(os.path.join(ann_dir, get_file_name(image_name) + cityscapes_labels_suffix), mask_label)
+            if len(separator_tags) == 0:
+                if curr_splitter['test'] == splitter['test']:
+                    curr_splitter = {'train': 0, 'val': 0, 'test': 0}
+                if curr_splitter['train'] < splitter['train']:
+                    curr_splitter['train'] += 1
+                    image_dir_path = images_dir_path_train
+                    ann_dir = anns_dir_path_train
+                elif curr_splitter['val'] < splitter['val']:
+                    curr_splitter['val'] += 1
+                    image_dir_path = images_dir_path_val
+                    ann_dir = anns_dir_path_val
+                elif curr_splitter['test'] < splitter['test']:
+                    curr_splitter['test'] += 1
+                    image_dir_path = images_dir_path_test
+                    ann_dir = anns_dir_path_test
+                    train_val_flag = False
+
+            get_image_and_ann()
 
         progress.iter_done_report()
 
