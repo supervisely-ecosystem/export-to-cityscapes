@@ -1,13 +1,23 @@
 {
-  "name": "Export to cityscapes",
+  "name": "Convert Supervisely to cityscapes format",
   "type": "app",
   "categories": [
-    "Export"
+    "cityscapes",
+    "convert format"
   ],
-  "description": "Convert supervisely to cityscapes",
+  "description": "Transform project to cityscapes format and prepares tar archive for download",
   "docker_image": "supervisely/base-py-sdk:6.1.59",
   "main_script": "src/main.py",
-  "task_location": "application_sessions",
-  "icon": "https://img.icons8.com/color/96/000000/group.png",
-  "icon_background": "#FFFFFF"
+  "modal_template": "src/modal.html",
+  "modal_template_state": {},
+  "gui_template": "src/gui.html",
+  "task_location": "workspace_tasks",
+  "isolate": true,
+  "headless": true,
+  "icon": "https://i.imgur.com/pz3eSzx.png",
+  "icon_background": "#FFFFFF",
+  "context_menu": {
+    "target": ["images_project"],
+    "context_root": "Download as"
+  }
 }
