@@ -14,7 +14,6 @@ my_app = sly.AppService()
 TEAM_ID = int(os.environ['context.teamId'])
 WORKSPACE_ID = int(os.environ['context.workspaceId'])
 PROJECT_ID = int(os.environ['modal.state.slyProjectId'])
-ARCHIVE_NAME = 'Cityscapes.tar.gz'
 RESULT_DIR_NAME = 'cityscapes_format'
 images_dir_name = 'leftImg8bit'
 annotations_dir_name = 'gtFine'
@@ -103,6 +102,8 @@ def from_sl_to_cityscapes(api: sly.Api, task_id, context, state, app_logger):
         write(os.path.join(ann_dir, get_file_name(base_image_name) + cityscapes_color_suffix), mask_color)
         write(os.path.join(ann_dir, get_file_name(base_image_name) + cityscapes_labels_suffix), mask_label)
 
+    project_name = api.project.get_info_by_id(PROJECT_ID).name
+    ARCHIVE_NAME = '{}_{}_Cityscapes.tar.gz'.format(PROJECT_ID, project_name)
     meta_json = api.project.get_meta(PROJECT_ID)
     meta = sly.ProjectMeta.from_json(meta_json)
     for obj_class in meta.obj_classes:
