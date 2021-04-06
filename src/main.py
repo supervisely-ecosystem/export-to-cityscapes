@@ -13,7 +13,7 @@ my_app = sly.AppService()
 
 TEAM_ID = int(os.environ['context.teamId'])
 WORKSPACE_ID = int(os.environ['context.workspaceId'])
-PROJECT_ID = int(os.environ['modal.state.slyProjectId'])
+PROJECT_ID = int(os.environ['context.projectId'])
 ARCHIVE_NAME = 'Cityscapes.tar.gz'
 RESULT_DIR_NAME = 'cityscapes_format'
 images_dir_name = 'leftImg8bit'
