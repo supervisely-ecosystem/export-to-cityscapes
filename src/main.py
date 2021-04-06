@@ -13,7 +13,6 @@ my_app = sly.AppService()
 
 TEAM_ID = int(os.environ['context.teamId'])
 WORKSPACE_ID = int(os.environ['context.workspaceId'])
-PROJECT_ID = int(os.environ['modal.state.slyProjectId'])
 ARCHIVE_NAME = 'Cityscapes.tar.gz'
 RESULT_DIR_NAME = 'cityscapes_format'
 images_dir_name = 'leftImg8bit'
@@ -221,8 +220,7 @@ def from_sl_to_cityscapes(api: sly.Api, task_id, context, state, app_logger):
 def main():
     sly.logger.info("Script arguments", extra={
         "TEAM_ID": TEAM_ID,
-        "WORKSPACE_ID": WORKSPACE_ID,
-        "PROJECT_ID": PROJECT_ID
+        "WORKSPACE_ID": WORKSPACE_ID
     })
 
     # Run application service
