@@ -42,7 +42,10 @@ def from_ann_to_cityscapes_mask(ann, name2id, app_logger, train_val_flag):
             label.geometry.draw(mask_color, label.obj_class.color)
         label.geometry.draw(mask_label, name2id[label.obj_class.name])
         if type(label.geometry) == Bitmap:
-            poly_for_contours = label.geometry.to_contours()[0]
+            curr_cnt = label.geometry.to_contours()
+            if len(curr_cnt) == 0:
+                continue
+            poly_for_contours = curr_cnt[0]
         else:
             poly_for_contours = label.geometry
 
