@@ -44,7 +44,9 @@ def from_ann_to_cityscapes_mask(ann, name2id, app_logger, train_val_flag):
             curr_cnt = label.geometry.to_contours()
             if len(curr_cnt) == 0:
                 continue
-            poly_for_contours = curr_cnt[0]
+            cnt_lens = list(map(lambda cnt: len(cnt.exterior), curr_cnt))
+            max_cnt = np.argmax(cnt_lens)
+            poly_for_contours = curr_cnt[max_cnt]
         else:
             poly_for_contours = label.geometry
 
