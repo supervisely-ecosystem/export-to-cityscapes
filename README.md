@@ -47,10 +47,6 @@ Current version of application supports only:
 
 In addition, Cityscapes format implies the presence of train/val datasets, and also train/val/test/train_extra. Thus, to split images on training and validation datasets you should assign  corresponding tags (`train`, `val`, `test`, `train_extra`) to images. If image doesn't have such tags, tags `train` and `val` will be assigned automatically, and user can define which percent of all images in project will be tagged as `train`, and the rest images will be tagged as `val`.
 
-**gui.png**
-<img src="gui"/>
-
-
 ## How To Run 
 **Step 1**: Add app to your team from [Ecosystem](https://ecosystem.supervise.ly/apps/convert-supervisely-to-cityscapes-format) if it is not there.
 
