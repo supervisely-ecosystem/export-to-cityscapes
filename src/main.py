@@ -44,9 +44,17 @@ def from_ann_to_cityscapes_mask(ann, name2id, app_logger, train_val_flag):
             curr_cnt = label.geometry.to_contours()
             if len(curr_cnt) == 0:
                 continue
-            cnt_lens = list(map(lambda cnt: len(cnt.exterior), curr_cnt))
-            max_cnt = np.argmax(cnt_lens)
-            poly_for_contours = curr_cnt[max_cnt]
+            elif len(curr_cnt) == 1:
+                poly_for_contours = curr_cnt[0]
+            else:
+                for poly in curr_cnt:
+                    cur_contours = poly.exterior_np.tolist()
+                    if len(poly.interior) > 0 and label.obj_class.name != 'out of roi':
+                        app_logger.info(
+                            'Labeled objects must never have holes in cityscapes format, existing holes will be sketched')
+                    cityscapes_contours = list(map(lambda cnt: cnt[::-1], cur_contours))
+                    poly_json['objects'].append({'label': label.obj_class.name, 'polygon': cityscapes_contours})
+                continue
         else:
             poly_for_contours = label.geometry
 
