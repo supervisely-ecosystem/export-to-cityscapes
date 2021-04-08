@@ -24,6 +24,7 @@
 Transform images project in Supervisely ([link to format](https://docs.supervise.ly/data-organization/00_ann_format_navi)) to [Cityscapes](https://github.com/mcordts/cityscapesScripts) and prepares downloadable `tar` archive.
 
 Supervisely project have to contain only classes with shape `Polygon` or `Bitmap`. It means that all labeled objects have to be polygons or bitmaps. If your project has classes with other shapes and you would like to convert the shapes of these classes and all corresponding objects (e.g. rectangles to polygons), we recommend you to use [`Convert Class Shape`](https://ecosystem.supervise.ly/apps/convert-class-shape) app. 
+
 **It's important that labeled foreground objects must never have holes, i.e. if there is some background visible ‘through’ some foreground object, it is considered to be part of the foreground.**
 
 The folder structure of the Cityscapes dataset is as follows:
