@@ -1,5 +1,5 @@
 <div align="center" markdown>
-<img src="https://i.imgur.com/UeObs7R.png"/>
+<img src="https://i.imgur.com/Anh1rfc.png"/>
 
 # From Supervisely to Cityscapes format
 
@@ -10,62 +10,56 @@
   <a href="#How-To-Run">How To Run</a> •
   <a href="#How-To-Use">How To Use</a>
 </p>
+
 [![](https://img.shields.io/badge/slack-chat-green.svg?logo=slack)](https://supervise.ly/slack)
-![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/supervisely-ecosystem/convert-supervisely-to-yolov5-format)
-[![views](https://app.supervise.ly/public/api/v3/ecosystem.counters?repo=supervisely-ecosystem/convert-supervisely-to-yolov5-format&counter=views&label=views)](https://supervise.ly)
-[![used by teams](https://app.supervise.ly/public/api/v3/ecosystem.counters?repo=supervisely-ecosystem/convert-supervisely-to-yolov5-format&counter=downloads&label=used%20by%20teams)](https://supervise.ly)
-[![runs](https://app.supervise.ly/public/api/v3/ecosystem.counters?repo=supervisely-ecosystem/convert-supervisely-to-yolov5-format&counter=runs&label=runs&123)](https://supervise.ly)
+![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/supervisely-ecosystem/export-to-cityscapes)
+[![views](https://app.supervise.ly/public/api/v3/ecosystem.counters?repo=supervisely-ecosystem/export-to-cityscapes&counter=views&label=views)](https://supervise.ly)
+[![used by teams](https://app.supervise.ly/public/api/v3/ecosystem.counters?repo=supervisely-ecosystem/export-to-cityscapes&counter=downloads&label=used%20by%20teams)](https://supervise.ly)
+[![runs](https://app.supervise.ly/public/api/v3/ecosystem.counters?repo=supervisely-ecosystem/export-to-cityscapes&counter=runs&label=runs&123)](https://supervise.ly)
 
 </div>
 
 ## Overview
 
-Transform images project in Supervisely ([link to format](https://docs.supervise.ly/data-organization/00_ann_format_navi)) to [YOLO v5 format](https://github.com/ultralytics/yolov5/wiki/Train-Custom-Data) and prepares downloadable `tar` archive.
+Transform images project in Supervisely ([link to format](https://docs.supervise.ly/data-organization/00_ann_format_navi)) to [Cityscapes](https://github.com/mcordts/cityscapesScripts) and prepares downloadable `tar` archive.
 
+Supervisely project have to contain only classes with shape `Polygon`. It means that all labeled objects have to be polygons. If your project has classes with other shapes and you would like to convert the shapes of these classes and all corresponding objects (e.g. bitmaps or rectangles to polygons), we recommend you to use [`Convert Class Shape`](https://ecosystem.supervise.ly/apps/convert-class-shape) app. 
 
-## Preparation
+The folder structure of the Cityscapes dataset is as follows:
 
-Supervisely project have to contain only classes with shape `Rectangle`. It means that all labeled objects have to be bounding boxes. If your project has classes with other shapes and you would like to convert the shapes of these classes and all corresponding objects (e.g. bitmaps or polygons to rectangles), we recommend you to use [`Convert Class Shape`](https://ecosystem.supervise.ly/apps/convert-class-shape) app. 
+`{root}/{type}{video}/{split}/{city}/{city}_{seq:0>6}_{frame:0>6}_{type}{ext}`
 
-In addition, YOLO v5 format implies the presence of train/val datasets. Thus, to split images on training and validation datasets you should assign  corresponding tags (`train` or `val`) to images. If image doesn't have such tags, it will be treated as `train`. We recommend to use app [`Assign train/val tags to images`](https://ecosystem.supervise.ly/apps/tag-train-val-test). 
+The meaning of the individual elements is:
 
+- `root` the root folder of the Cityscapes dataset.
+
+- `type` the type/modality of data, e.g. gtFine for fine ground truth, or leftImg8bit for left 8-bit images.
+
+- `split` the split, i.e. `train/val/test/train_extra`. Note that not all kinds of data exist for all splits. Thus, do not be surprised to occasionally find empty folders.
+
+- `city` the city in which this part of the dataset was recorded. In supervisely project `city`is used as a dataset name.
+
+You can download example of Cityscapes datasets [here](https://www.cityscapes-dataset.com/)
+
+Current version of application supports only:
+`gtFine` the fine annotations. This type of annotations is used for validation, testing, and optionally for training. Annotations are encoded using json files containing the individual polygons.
+`leftImg8bit` the left images in 8-bit LDR format. These are the standard annotated images.
+
+In addition, Cityscapes format implies the presence of train/val datasets, and also train/val/test/train_extra. Thus, to split images on training and validation datasets you should assign  corresponding tags (`train`, `val`, `test`, `train_extra`) to images. If image doesn't have such tags, tags `train` and `val` will be assigned automatically, and user can define which percent of all images in project will be tagged as `train`, and the rest images will be tagged as `val`.
 
 ## How To Run 
-**Step 1**: Add app to your team from [Ecosystem](https://ecosystem.supervise.ly/apps/convert-supervisely-to-yolov5-format) if it is not there.
+**Step 1**: Add app to your team from [Ecosystem](https://ecosystem.supervise.ly/apps/convert-supervisely-to-cityscapes-format) if it is not there.
 
-**Step 2**: Open context menu of project -> `Download as` -> `Convert Supervisely to YOLO v5 format` 
+**Step 2**: Open context menu of project -> `Download as` -> `Convert Supervisely to Cityscapes format` 
 
-<img src="https://i.imgur.com/bOUC5WH.png" width="600px"/>
+<img src="https://i.imgur.com/XKDjlu3.png" width="600px"/>
 
 
 ## How to use
+After running the application, you will be redirected to the Tasks page. Once application processing has finished, your link for downloading will become available. Click on the file name to download it
 
-App creates task in `workspace tasks` list. Once app is finished, you will see download link to resulting tar archive. 
+<img src="https://i.imgur.com/4AB2hgH.png"/>
 
-<img src="https://i.imgur.com/kXnmshv.png"/>
+**Note** You can also find your images metadata in Team Files->cityscapes_format->app_id->`projectId_projectName.tar`
 
-Resulting archived is saved in : 
-
-`Current Team` -> `Files` -> `/yolov5_format/<task_id>/<project_id>_<project_name>.tar`. 
-
-For example, in our example file path is the following: 
-
-`/yolov5_format/1430/1047_lemons_annotated.tar`.
-
-<img src="https://i.imgur.com/hGrAyY0.png"/>
-
-If some images were not tagged with `train` or `val` tags, special warning is printed. You will see all warnings in task logs.
-
-<img src="https://i.imgur.com/O5tshZQ.png"/>
-
-
-Here is the example of `data_config.yaml` that you will find in archive:
-
-
-```yaml
-names: [kiwi, lemon]            # class names
-colors: [[255,1,1], [1,255,1]]  # class colors
-nc: 2                           # number of classes
-train: ../lemons/images/train   # path to train imgs
-val: ../lemons/images/val       # path to val imgs
-```
+<img src="https://i.imgur.com/VxbXPJj.png"/>
