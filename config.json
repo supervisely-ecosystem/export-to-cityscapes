@@ -1,11 +1,11 @@
 {
-  "name": "Convert Supervisely to cityscapes format",
+  "name": "Export to Cityscapes format",
   "type": "app",
   "categories": [
     "cityscapes",
     "convert format"
   ],
-  "description": "Transform project to cityscapes format and prepares tar archive for download",
+  "description": "Transforms Supervisely project to cityscapes format and prepares tar archive for download",
   "docker_image": "supervisely/base-py-sdk:6.1.59",
   "main_script": "src/main.py",
   "modal_template": "src/modal.html",
