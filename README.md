@@ -1,5 +1,5 @@
 <div align="center" markdown>
-<img src="https://i.imgur.com/UeObs7R.png"/>
+<img src="https://i.imgur.com/EPBkPq1.png"/>
 
 # From Supervisely to Cityscapes format
 
