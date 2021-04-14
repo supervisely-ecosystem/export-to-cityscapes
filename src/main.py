@@ -135,8 +135,8 @@ def from_sl_to_cityscapes(api: sly.Api, task_id, context, state, app_logger):
     name2id = {}
     for idx, obj_class in enumerate(meta.obj_classes):
         curr_class = {}
-        curr_class['label'] = obj_class.name
-        curr_class['label_id'] = idx + 1
+        curr_class['name'] = obj_class.name
+        curr_class['id'] = idx + 1
         curr_class['color'] = obj_class.color
         class_to_id.append(curr_class)
         name2id[obj_class.name] = (idx + 1, idx + 1, idx + 1)
