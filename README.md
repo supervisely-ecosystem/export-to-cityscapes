@@ -1,5 +1,5 @@
 <div align="center" markdown>
-<img src="https://i.imgur.com/Anh1rfc.png"/>
+<img src="https://i.imgur.com/zlpoZpK.png"/>
 
 # From Supervisely to Cityscapes format
 
@@ -21,7 +21,7 @@
 
 ## Overview
 
-Transform images project in Supervisely ([link to format](https://docs.supervise.ly/data-organization/00_ann_format_navi)) to [Cityscapes](https://github.com/mcordts/cityscapesScripts) and prepares downloadable `tar` archive.
+Converts [Supervisely](https://docs.supervise.ly/data-organization/00_ann_format_navi) format project to [Cityscapes](https://github.com/mcordts/cityscapesScripts) and prepares downloadable `tar` archive.
 
 Supervisely project have to contain only classes with shape `Polygon` or `Bitmap`. It means that all labeled objects have to be polygons or bitmaps. If your project has classes with other shapes and you would like to convert the shapes of these classes and all corresponding objects (e.g. rectangles to polygons), we recommend you to use [`Convert Class Shape`](https://ecosystem.supervise.ly/apps/convert-class-shape) app. 
 
