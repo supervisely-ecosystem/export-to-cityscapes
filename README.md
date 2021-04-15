@@ -30,8 +30,11 @@ Supervisely project have to contain only classes with shapes `Polygon` or `Bitma
 ## Important notes
 
 1) **Labeled foreground objects must never have holes**, i.e. if there is some background visible ‘through’ some foreground object, it is considered to 		be part of the foreground. If objects in Supervisely format have holes, after export to Cityscapes format holes will be sketched, so you may lose some 		of the input data.
+<img src="https://i.imgur.com/AzgqBN8.png" width="600px"/>
 
 2) If `Bitmap` in Supervisely format contain **not connected components**, after export to Cityscapes format, this figure will be split into several.
+<img src="https://i.imgur.com/NxizXUE.png" width="600px"/>
+<img src="https://i.imgur.com/vqGvmXo.png" width="600px"/>
 
 3) Unlike the standard Cityscapes format, which can contain well-defined classes with well-defined colors and ids, project derived from Supervisely 		format can contain classes with **any names and colors**. In this regard:
 
@@ -71,14 +74,14 @@ In addition, Cityscapes format implies the presence of train/val datasets, and a
 
 **Step 2**: Open context menu of project -> `Download as` -> `Convert Supervisely to Cityscapes format` 
 
-<img src="https://i.imgur.com/XKDjlu3.png" width="600px"/>
+<img src="https://i.imgur.com/kxVGztq.png" width="600px"/>
 
 
 ## How to use
 After running the application, you will be redirected to the Tasks page. Once application processing has finished, your link for downloading will become available. Click on the file name to download it
 
-<img src="https://i.imgur.com/4AB2hgH.png"/>
+<img src="https://i.imgur.com/5WEh12e.png" width="800px"/>
 
-**Note** You can also find your images metadata in Team Files->cityscapes_format->app_id->`projectId_projectName.tar`
+**Note** You can also find your converted project in: Team Files->cityscapes_format->app_id->`projectId_projectName_formatName.tar`
 
-<img src="https://i.imgur.com/VxbXPJj.png"/>
+<img src="https://i.imgur.com/5WEh12e.png" width="800px"/>
