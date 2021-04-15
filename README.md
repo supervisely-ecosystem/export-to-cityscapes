@@ -39,17 +39,17 @@ The meaning of the individual elements is:
 
 - `split` the split, i.e. `train/val/test/train_extra`. Note that not all kinds of data exist for all splits. Thus, do not be surprised to occasionally find empty folders.
 
-- `city` the city in which this part of the dataset was recorded. In supervisely project `city`is used as a dataset name.
+- `city` the city in which this part of the dataset was recorded. In supervisely project `city` is used as a dataset name.
 
-You can download example of Cityscapes datasets [here](https://www.cityscapes-dataset.com/)
+You can download example of Cityscapes datasets [here](https://www.cityscapes-dataset.com/).
 
 Current version of application supports only:
-`gtFine` the fine annotations. This type of annotations is used for validation, testing, and optionally for training. Annotations are encoded using json files containing the individual polygons.
-`leftImg8bit` the left images in 8-bit LDR format. These are the standard annotated images.
+`gtFine` - the fine annotations. This type of annotations is used for validation, testing, and optionally for training. Annotations are encoded using json files containing the individual polygons.
+`leftImg8bit` - the left images in 8-bit LDR format. These are the standard annotated images.
 
 In addition, Cityscapes format implies the presence of train/val datasets, and also train/val/test. Thus, to split images on training and validation datasets you should assign  corresponding tags (`train`, `val`, `test`) to images. If image doesn't have such tags, tags `train`, `val` and `test` will be assigned automatically, and user can define which percent of all images in project will be tagged as `train`, the rest images will be tagged as `val `and `test`.
 
-Unlike the standard format Cityscapes, which can contain well-defined classes with well-defined colors and ids, project derived from format Supervisely can contain classes with absolutely any names and colors. In this regard after export Supervisely to Cityscapes format a file in JSON format will be added to the root of the resulting project with name `class_to_id.json`. It contains information about received from Supervisely classes names, their colors and their corresponding ids.
+Unlike the standard Cityscapes format, which can contain well-defined classes with well-defined colors and ids, project derived from Supervisely format can contain classes with **any names and colors**. In this regard after export Supervisely to Cityscapes format a file in `.JSON` format will be added to the root of the resulting project with the name `class_to_id.json`. It contains information about Supervisely classes names, their colors and their corresponding ids.
 
 ## How To Run 
 **Step 1**: Add app to your team from [Ecosystem](https://ecosystem.supervise.ly/apps/convert-supervisely-to-cityscapes-format) if it is not there.
