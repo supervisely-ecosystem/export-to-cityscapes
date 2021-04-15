@@ -25,7 +25,13 @@ Converts [Supervisely](https://docs.supervise.ly/data-organization/00_ann_format
 
 Supervisely project have to contain only classes with shape `Polygon` or `Bitmap`. It means that all labeled objects have to be polygons or bitmaps. If your project has classes with other shapes and you would like to convert the shapes of these classes and all corresponding objects (e.g. rectangles to polygons), we recommend you to use [`Convert Class Shape`](https://ecosystem.supervise.ly/apps/convert-class-shape) app. 
 
-**It's important that labeled foreground objects must never have holes, i.e. if there is some background visible ‘through’ some foreground object, it is considered to be part of the foreground.**
+
+
+## Important notes
+
+​	1) **Labeled foreground objects must never have holes**, i.e. if there is some background visible ‘through’ some foreground object, it is considered to be part of the foreground. If objects in Supervisely format have holes, after export to Cityscapes format holes will be sketched, so you may lose some of the input data.
+
+​	2) If `Bitmap` in Supervisely format contain **not connected components**, after export to Cityscapes format, this figure will be split into several.
 
 The folder structure of the Cityscapes dataset is as follows:
 
@@ -49,7 +55,11 @@ Current version of application supports only:
 
 In addition, Cityscapes format implies the presence of train/val datasets, and also train/val/test. Thus, to split images on training and validation datasets you should assign  corresponding tags (`train`, `val`, `test`) to images. If image doesn't have such tags, tags `train`, `val` and `test` will be assigned automatically, and user can define which percent of all images in project will be tagged as `train`, the rest images will be tagged as `val `and `test`.
 
-Unlike the standard Cityscapes format, which can contain well-defined classes with well-defined colors and ids, project derived from Supervisely format can contain classes with **any names and colors**. In this regard after export Supervisely to Cityscapes format a file in `.JSON` format will be added to the root of the resulting project with the name `class_to_id.json`. It contains information about Supervisely classes names, their colors and their corresponding ids.
+Unlike the standard Cityscapes format, which can contain well-defined classes with well-defined colors and ids, project derived from Supervisely format can contain classes with **any names and colors**. In this regard:
+
+​	1) After export Supervisely to Cityscapes format a file in `JSON` format will be added to the root of the resulting project with the name `class_to_id.json`. It contains information about Supervisely classes names, their colors and their corresponding ids. 
+
+​	2) Annotation file with extension  `<image_name>_instanceIds.png` will not be created after conversion.
 
 ## How To Run 
 **Step 1**: Add app to your team from [Ecosystem](https://ecosystem.supervise.ly/apps/convert-supervisely-to-cityscapes-format) if it is not there.

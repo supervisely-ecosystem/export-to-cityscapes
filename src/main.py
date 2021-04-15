@@ -117,9 +117,16 @@ def from_sl_to_cityscapes(api: sly.Api, task_id, context, state, app_logger):
     ARCHIVE_NAME = '{}_{}_Cityscapes.tar.gz'.format(PROJECT_ID, project_name)
     meta_json = api.project.get_meta(PROJECT_ID)
     meta = sly.ProjectMeta.from_json(meta_json)
+    has_bitmap_poly_shapes = False
     for obj_class in meta.obj_classes:
         if obj_class.geometry_type not in possible_geometries:
             app_logger.info('Only converting bitmap and polygon classes is possible, not {}'.format(obj_class.geometry_type))
+        else:
+            has_bitmap_poly_shapes = True
+
+    if has_bitmap_poly_shapes is False:
+        app_logger.info('Input project have not bitmap or polygon classes, but it is necessarily, application will stop')
+        my_app.stop()
 
     RESULT_ARCHIVE = os.path.join(my_app.data_dir, ARCHIVE_NAME)
     RESULT_DIR = os.path.join(my_app.data_dir, RESULT_DIR_NAME)
