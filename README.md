@@ -43,6 +43,8 @@ Supervisely project have to contain only classes with shapes `Polygon` or `Bitma
 
 
 
+**Cityscapes dataset structure**
+
 The folder structure of the Cityscapes dataset is as follows:
 
 `{root}/{type}{video}/{split}/{city}/{city}_{seq:0>6}_{frame:0>6}_{type}{ext}`
