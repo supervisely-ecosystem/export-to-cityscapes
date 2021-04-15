@@ -125,7 +125,7 @@ def from_sl_to_cityscapes(api: sly.Api, task_id, context, state, app_logger):
             has_bitmap_poly_shapes = True
 
     if has_bitmap_poly_shapes is False:
-        app_logger.info('Input project have not bitmap or polygon classes, but it is necessarily, application will stop')
+        app_logger.warn('Input project have not bitmap or polygon classes, but it is necessarily, application will stop')
         my_app.stop()
 
     RESULT_ARCHIVE = os.path.join(my_app.data_dir, ARCHIVE_NAME)
