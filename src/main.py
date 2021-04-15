@@ -135,6 +135,8 @@ def from_sl_to_cityscapes(api: sly.Api, task_id, context, state, app_logger):
     class_to_id = []
     name2id = {}
     for idx, obj_class in enumerate(meta.obj_classes):
+        if obj_class.geometry_type not in possible_geometries:
+            continue
         curr_class = {}
         curr_class['name'] = obj_class.name
         curr_class['id'] = idx + 1
