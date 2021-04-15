@@ -29,16 +29,21 @@ Supervisely project have to contain only classes with shapes `Polygon` or `Bitma
 
 ## Important notes
 
-1) **Labeled foreground objects must never have holes**, i.e. if there is some background visible ‘through’ some foreground object, it is considered to 		be part of the foreground. If objects in Supervisely format have holes, after export to Cityscapes format holes will be sketched, so you may lose some 		of the input data.
+1) **Labeled foreground objects must never have holes**, i.e. if there is some background visible through a foreground object, it is considered to a be part of the foreground. If objects in Supervisely format have holes, after export to Cityscapes format holes will be filled, so you may lose some of the input data.
+
 <p align="center">
 <img src="https://i.imgur.com/AzgqBN8.png" width="600px"/>
 </p>
-2) If `Bitmap` in Supervisely format contain **not connected components**, after export to Cityscapes format, this figure will be split into several.
-<p>
+
+2) If `Bitmap` in Supervisely format contain **unconnected components**, this figure will be splitted into separate objects after export to Cityscapes format.
+
+<p align="center">
 <img src="https://i.imgur.com/NxizXUE.png" width="400px"/>
 <img src="https://i.imgur.com/vqGvmXo.png" width="400px"/>
 </p>
-3) Unlike the standard Cityscapes format, which can contain well-defined classes with well-defined colors and ids, project derived from Supervisely 		format can contain classes with **any names and colors**. In this regard:
+
+3) Unlike the standard Cityscapes format, which can contain well-defined classes with well-defined colors and ids, project derived from Supervisely format can contain classes with **any names and colors**. 
+In this regard:
 
 - After export Supervisely project to Cityscapes format a file in `JSON` format will be added to the root of the resulting project with name `class_to_id.json`. It contains information about Supervisely project classes names, colors and their corresponding ids. 
 - Annotation file with extension  `<image_name>_instanceIds.png` will not be created after conversion.
@@ -74,13 +79,13 @@ In addition, Cityscapes format implies the presence of train/val datasets, and a
 ## How To Run 
 **Step 1**: Add app to your team from [Ecosystem](https://ecosystem.supervise.ly/apps/convert-supervisely-to-cityscapes-format) if it is not there.
 
-**Step 2**: Open context menu of project -> `Download as` -> `Convert Supervisely to Cityscapes format` 
+**Step 2**: Open context menu of project -> `Download as` -> `Export to Cityscapes format` 
 
 <img src="https://i.imgur.com/kxVGztq.png" width="600px"/>
 
 
 ## How to use
-After running the application, you will be redirected to the Tasks page. Once application processing has finished, your link for downloading will become available. Click on the file name to download it
+After running the application, you will be redirected to the Tasks page. Once application processing has finished, your link for downloading will become available. Click on the file name to download it.
 
 <img src="https://i.imgur.com/5WEh12e.png" width="800px"/>
 
