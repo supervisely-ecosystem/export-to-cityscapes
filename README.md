@@ -30,8 +30,9 @@ Supervisely project have to contain only classes with shapes `Polygon` or `Bitma
 ## Important notes
 
 1) **Labeled foreground objects must never have holes**, i.e. if there is some background visible ‘through’ some foreground object, it is considered to 		be part of the foreground. If objects in Supervisely format have holes, after export to Cityscapes format holes will be sketched, so you may lose some 		of the input data.
+<p align="center">
 <img src="https://i.imgur.com/AzgqBN8.png" width="600px"/>
-
+</p>
 2) If `Bitmap` in Supervisely format contain **not connected components**, after export to Cityscapes format, this figure will be split into several.
 <p>
 <img src="https://i.imgur.com/NxizXUE.png" width="400px"/>
