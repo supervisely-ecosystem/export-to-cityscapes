@@ -37,6 +37,8 @@ def from_ann_to_cityscapes_mask(ann, name2id, app_logger, train_val_flag):
     poly_json = {'imgHeight': ann.img_size[0], 'imgWidth': ann.img_size[1], 'objects': []}
 
     for label in ann.labels:
+        if type(label.geometry) not in possible_geometries:
+            continue
         if train_val_flag:
             label.geometry.draw(mask_color, label.obj_class.color)
         label.geometry.draw(mask_label, name2id[label.obj_class.name])
@@ -95,7 +97,6 @@ def get_tags_splitter(anns):
     return {'train': train_tags_cnt, 'val': val_tags_cnt, 'test': test_tags_cnt}
 
 
-
 @my_app.callback("from_sl_to_cityscapes")
 @sly.timeit
 def from_sl_to_cityscapes(api: sly.Api, task_id, context, state, app_logger):
@@ -118,7 +119,7 @@ def from_sl_to_cityscapes(api: sly.Api, task_id, context, state, app_logger):
     meta = sly.ProjectMeta.from_json(meta_json)
     for obj_class in meta.obj_classes:
         if obj_class.geometry_type not in possible_geometries:
-            raise ValueError('Only converting bitmap and polygon classes is possible, not {}'.format(obj_class.geometry_type))
+            app_logger.info('Only converting bitmap and polygon classes is possible, not {}'.format(obj_class.geometry_type))
 
     RESULT_ARCHIVE = os.path.join(my_app.data_dir, ARCHIVE_NAME)
     RESULT_DIR = os.path.join(my_app.data_dir, RESULT_DIR_NAME)
@@ -227,9 +228,7 @@ def from_sl_to_cityscapes(api: sly.Api, task_id, context, state, app_logger):
     app_logger.info("Uploaded to Team-Files: {!r}".format(file_info.full_storage_url))
     api.task.set_output_archive(task_id, file_info.id, ARCHIVE_NAME, file_url=file_info.full_storage_url)
 
-
     my_app.stop()
-
 
 
 def main():
@@ -241,7 +240,6 @@ def main():
 
     # Run application service
     my_app.run(initial_events=[{"command": "from_sl_to_cityscapes"}])
-
 
 
 if __name__ == '__main__':
