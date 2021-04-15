@@ -29,17 +29,14 @@ Supervisely project have to contain only classes with shapes `Polygon` or `Bitma
 
 ## Important notes
 
-​	1) **Labeled foreground objects must never have holes**, i.e. if there is some background visible ‘through’ some foreground object, it is considered to 		be part of the foreground. If objects in Supervisely format have holes, after export to Cityscapes format holes will be sketched, so you may lose some 		of the input data.
+1) **Labeled foreground objects must never have holes**, i.e. if there is some background visible ‘through’ some foreground object, it is considered to 		be part of the foreground. If objects in Supervisely format have holes, after export to Cityscapes format holes will be sketched, so you may lose some 		of the input data.
 
-​	2) If `Bitmap` in Supervisely format contain **not connected components**, after export to Cityscapes format, this figure will be split into several.
+2) If `Bitmap` in Supervisely format contain **not connected components**, after export to Cityscapes format, this figure will be split into several.
 
-​	3) Unlike the standard Cityscapes format, which can contain well-defined classes with well-defined colors and ids, project derived from Supervisely 		format can contain classes with **any names and colors**. In this regard:
+3) Unlike the standard Cityscapes format, which can contain well-defined classes with well-defined colors and ids, project derived from Supervisely 		format can contain classes with **any names and colors**. In this regard:
 
-​			a) After export Supervisely project to Cityscapes format a file in `JSON` format will be added to the root of the resulting project with 
-
-​				name `class_to_id.json`. It contains information about Supervisely project classes names, colors and their corresponding ids. 
-
-​			b) Annotation file with extension  `<image_name>_instanceIds.png` will not be created after conversion.
+- After export Supervisely project to Cityscapes format a file in `JSON` format will be added to the root of the resulting project with name `class_to_id.json`. It contains information about Supervisely project classes names, colors and their corresponding ids. 
+- Annotation file with extension  `<image_name>_instanceIds.png` will not be created after conversion.
 
 
 
