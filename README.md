@@ -33,9 +33,10 @@ Supervisely project have to contain only classes with shapes `Polygon` or `Bitma
 <img src="https://i.imgur.com/AzgqBN8.png" width="600px"/>
 
 2) If `Bitmap` in Supervisely format contain **not connected components**, after export to Cityscapes format, this figure will be split into several.
-<img src="https://i.imgur.com/NxizXUE.png" width="600px"/>
-<img src="https://i.imgur.com/vqGvmXo.png" width="600px"/>
-
+<p>
+<img src="https://i.imgur.com/NxizXUE.png" width="400px"/>
+<img src="https://i.imgur.com/vqGvmXo.png" width="400px"/>
+</p>
 3) Unlike the standard Cityscapes format, which can contain well-defined classes with well-defined colors and ids, project derived from Supervisely 		format can contain classes with **any names and colors**. In this regard:
 
 - After export Supervisely project to Cityscapes format a file in `JSON` format will be added to the root of the resulting project with name `class_to_id.json`. It contains information about Supervisely project classes names, colors and their corresponding ids. 
