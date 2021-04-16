@@ -137,7 +137,7 @@ def from_sl_to_cityscapes(api: sly.Api, task_id, context, state, app_logger):
     result_anns_val = os.path.join(RESULT_DIR, annotations_dir_name, default_dir_val)
     result_anns_test = os.path.join(RESULT_DIR, annotations_dir_name, default_dir_test)
     sly.fs.mkdir(RESULT_DIR)
-    app_logger.info("Make Cityscapes dir")
+    app_logger.info("Cityscapes Dataset folder has been created")
 
     class_to_id = []
     name2id = {}
@@ -152,8 +152,7 @@ def from_sl_to_cityscapes(api: sly.Api, task_id, context, state, app_logger):
         name2id[obj_class.name] = (idx + 1, idx + 1, idx + 1)
 
     dump_json_file(class_to_id, os.path.join(RESULT_DIR, 'class_to_id.json'))
-
-    app_logger.info("Create palette, it will be save in class_to_id.json file")
+    app_logger.info("Writing classes with colors to class_to_id.json file")
 
     datasets = api.dataset.get_list(PROJECT_ID)
     for dataset in datasets:
@@ -167,7 +166,7 @@ def from_sl_to_cityscapes(api: sly.Api, task_id, context, state, app_logger):
 
         images = api.image.get_list(dataset.id)
         if len(images) < 3:
-            app_logger.info('Number of images in {} dataset is less then 3, val and train dirs for this dataset may be not created'.format(dataset.name))
+            app_logger.warn('Number of images in {} dataset is less then 3, val and train directories for this dataset will not be created'.format(dataset.name))
 
         image_ids = [image_info.id for image_info in images]
         base_image_names = [image_info.name for image_info in images]
@@ -184,7 +183,7 @@ def from_sl_to_cityscapes(api: sly.Api, task_id, context, state, app_logger):
             ann_tags = [tag.name for tag in ann.img_tags]
             separator_tags=list(set(ann_tags) & set(possible_tags))
             if len(separator_tags) > 1:
-                app_logger.info('There are more then one separator tag for {} image. {} tag will be used for split'.format(image_name, separator_tags[0]))
+                app_logger.warn('There are more then one separator tag for {} image. {} tag will be used for split'.format(image_name, separator_tags[0]))
 
             if len(separator_tags) >= 1:
                 if separator_tags[0] == 'train':
