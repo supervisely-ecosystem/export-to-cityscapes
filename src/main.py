@@ -120,12 +120,12 @@ def from_sl_to_cityscapes(api: sly.Api, task_id, context, state, app_logger):
     has_bitmap_poly_shapes = False
     for obj_class in meta.obj_classes:
         if obj_class.geometry_type not in possible_geometries:
-            app_logger.info('Only converting bitmap and polygon classes is possible, not {}'.format(obj_class.geometry_type))
+            app_logger.warn(f'Cityscapes format supports only bitmap and polygon classes, {obj_class.geometry_type} will be skipped')
         else:
             has_bitmap_poly_shapes = True
 
     if has_bitmap_poly_shapes is False:
-        app_logger.warn('Input project have not bitmap or polygon classes, but it is necessarily, application will stop')
+        raise Exception('Input project does not contain bitmap or polygon classes')
         my_app.stop()
 
     RESULT_ARCHIVE = os.path.join(my_app.data_dir, ARCHIVE_NAME)
