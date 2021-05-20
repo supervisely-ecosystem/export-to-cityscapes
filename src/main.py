@@ -156,7 +156,6 @@ def from_sl_to_cityscapes(api: sly.Api, task_id, context, state, app_logger):
 
     datasets = api.dataset.get_list(PROJECT_ID)
     for dataset in datasets:
-        progress = sly.Progress('Convert images and anns from dataset {}'.format(dataset.name), len(datasets), app_logger)
         images_dir_path_train = os.path.join(result_images_train, dataset.name)
         images_dir_path_val = os.path.join(result_images_val, dataset.name)
         images_dir_path_test = os.path.join(result_images_test, dataset.name)
@@ -165,6 +164,7 @@ def from_sl_to_cityscapes(api: sly.Api, task_id, context, state, app_logger):
         anns_dir_path_test = os.path.join(result_anns_test, dataset.name)
 
         images = api.image.get_list(dataset.id)
+        progress = sly.Progress('Convert images and anns from dataset {}'.format(dataset.name), len(images), app_logger)
         if len(images) < 3:
             app_logger.warn('Number of images in {} dataset is less then 3, val and train directories for this dataset will not be created'.format(dataset.name))
 
@@ -216,7 +216,7 @@ def from_sl_to_cityscapes(api: sly.Api, task_id, context, state, app_logger):
 
             get_image_and_ann()
 
-        progress.iter_done_report()
+            progress.iter_done_report()
 
     sly.fs.archive_directory(RESULT_DIR, RESULT_ARCHIVE)
     app_logger.info("Result directory is archived")
