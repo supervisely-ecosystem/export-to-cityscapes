@@ -46,7 +46,7 @@ Supervisely project have to contain only classes with shapes `Polygon` or `Bitma
 In this regard:
 
 - After export Supervisely project to Cityscapes format a file in `JSON` format will be added to the root of the resulting project with name `class_to_id.json`. It contains information about Supervisely project classes names, colors and their corresponding ids. 
-
+- Additional annotation file for each image with extension `<image_name>_instanceIds.png` will not be created after conversion(information about classes colors and ids is contained in `class_to_id.json` file)
 
 
 **Cityscapes dataset structure**
