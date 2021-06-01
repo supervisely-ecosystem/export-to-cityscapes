@@ -72,7 +72,7 @@ Current version of application supports only:
 `gtFine` - the fine annotations. This type of annotations is used for validation, testing, and optionally for training. Annotations are encoded using json files containing the individual polygons.
 `leftImg8bit` - the images. These are the standard annotated images.
 
-In addition, Cityscapes format implies the presence of train/val datasets, and also train/val/test. Thus, to split images on training and validation datasets you should assign  corresponding tags (`train`, `val`, `test`) to images. If image doesn't have such tags, tags `train`, `val` and `test` will be assigned automatically, and user can define which percent of all images in project will be tagged as `train`, the rest images will be tagged as `val `and `test`.
+In addition, Cityscapes format implies the presence of train/val datasets, and also train/val/test. Thus, to split images on training and validation datasets you should assign  corresponding tags (`train`, `val`, `test`) to images. If project contains one of `train`, `val`, `test` tags, resulting archive also will contain it. If image doesn't have such tags, tags `train`, `val` and `test` will be assigned automatically in proportions `train - 60%`, `val -  20%`, `test - 20%`.
 
 
 
