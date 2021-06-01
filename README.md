@@ -89,6 +89,6 @@ After running the application, you will be redirected to the Tasks page. Once ap
 
 <img src="https://i.imgur.com/5WEh12e.png" width="800px"/>
 
-**Note** You can also find your converted project in: Team Files->cityscapes_format->app_id->`projectId_projectName_formatName.tar`
+**Note** You can also find your converted project in: Team Files->cityscapes_format->app_id->`projectId_projectName_formatName.tar.gz`
 
 <img src="https://i.imgur.com/5WEh12e.png" width="800px"/>
