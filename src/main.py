@@ -196,9 +196,9 @@ def from_sl_to_cityscapes(api: sly.Api, task_id, context, state, app_logger):
         # ]
 
         image_names = [
-            get_file_name(image_info.name.replace('_leftImg8bit', '')) + cityscapes_images_suffix + get_file_ext(
-                image_info.name) for
-            image_info in images]
+            get_file_name(image_info.name.replace('_leftImg8bit', '')) + \
+            cityscapes_images_suffix + get_file_ext(image_info.name) for image_info in images
+        ]
 
         ann_infos = api.annotation.download_batch(dataset.id, image_ids)
         anns = [sly.Annotation.from_json(ann_info.annotation, meta) for ann_info in ann_infos]
