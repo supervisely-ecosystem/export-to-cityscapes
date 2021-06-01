@@ -208,52 +208,53 @@ def from_sl_to_cityscapes(api: sly.Api, task_id, context, state, app_logger):
 
         for ann, image_id, image_name, base_image_name in zip(anns, image_ids, image_names, base_image_names):
             train_val_flag = True
-            # ann_tags = [tag.name for tag in ann.img_tags]
-            # separator_tags = list(set(ann_tags) & set(possible_tags))
-            # if len(separator_tags) > 1:
-            #     app_logger.warn('''There are more then one separator tag for {} image. {}
-            #     tag will be used for split'''.format(image_name, separator_tags[0]))
-            #
-            # if len(separator_tags) >= 1:
-            #     if separator_tags[0] == 'train':
-            #         image_dir_path = images_dir_path_train
-            #         ann_dir = anns_dir_path_train
-            #     elif separator_tags[0] == 'val':
-            #         image_dir_path = images_dir_path_val
-            #         ann_dir = anns_dir_path_val
-            #     else:
-            #         image_dir_path = images_dir_path_test
-            #         ann_dir = anns_dir_path_test
-            #         train_val_flag = False
-            #
-            # if len(separator_tags) == 0:
-            #     if curr_splitter['test'] == splitter['test']:
-            #         curr_splitter = {'train': 0, 'val': 0, 'test': 0}
-            #     if curr_splitter['train'] < splitter['train']:
-            #         curr_splitter['train'] += 1
-            #         image_dir_path = images_dir_path_train
-            #         ann_dir = anns_dir_path_train
-            #     elif curr_splitter['val'] < splitter['val']:
-            #         curr_splitter['val'] += 1
-            #         image_dir_path = images_dir_path_val
-            #         ann_dir = anns_dir_path_val
-            #     elif curr_splitter['test'] < splitter['test']:
-            #         curr_splitter['test'] += 1
-            #         image_dir_path = images_dir_path_test
-            #         ann_dir = anns_dir_path_test
-            #         train_val_flag = False
+            try:
+                split_name = ann.img_tags.get('split').value
+                if split_name == 'train':
+                    image_dir_path = images_dir_path_train
+                    ann_dir = anns_dir_path_train
+                elif split_name == 'val':
+                    image_dir_path = images_dir_path_val
+                    ann_dir = anns_dir_path_val
+                else:
+                    image_dir_path = images_dir_path_test
+                    ann_dir = anns_dir_path_test
+                    train_val_flag = False
+            except:
+                ann_tags = [tag.name for tag in ann.img_tags]
+                separator_tags = list(set(ann_tags) & set(possible_tags))
+                if len(separator_tags) > 1:
+                    app_logger.warn('''There are more then one separator tag for {} image. {}
+                    tag will be used for split'''.format(image_name, separator_tags[0]))
 
-            split_name = ann.img_tags.get('split').value
-            if split_name == 'train':
-                image_dir_path = images_dir_path_train
-                ann_dir = anns_dir_path_train
-            elif split_name == 'val':
-                image_dir_path = images_dir_path_val
-                ann_dir = anns_dir_path_val
-            else:
-                image_dir_path = images_dir_path_test
-                ann_dir = anns_dir_path_test
-                train_val_flag = False
+                if len(separator_tags) >= 1:
+                    if separator_tags[0] == 'train':
+                        image_dir_path = images_dir_path_train
+                        ann_dir = anns_dir_path_train
+                    elif separator_tags[0] == 'val':
+                        image_dir_path = images_dir_path_val
+                        ann_dir = anns_dir_path_val
+                    else:
+                        image_dir_path = images_dir_path_test
+                        ann_dir = anns_dir_path_test
+                        train_val_flag = False
+
+                if len(separator_tags) == 0:
+                    if curr_splitter['test'] == splitter['test']:
+                        curr_splitter = {'train': 0, 'val': 0, 'test': 0}
+                    if curr_splitter['train'] < splitter['train']:
+                        curr_splitter['train'] += 1
+                        image_dir_path = images_dir_path_train
+                        ann_dir = anns_dir_path_train
+                    elif curr_splitter['val'] < splitter['val']:
+                        curr_splitter['val'] += 1
+                        image_dir_path = images_dir_path_val
+                        ann_dir = anns_dir_path_val
+                    elif curr_splitter['test'] < splitter['test']:
+                        curr_splitter['test'] += 1
+                        image_dir_path = images_dir_path_test
+                        ann_dir = anns_dir_path_test
+                        train_val_flag = False
 
             get_image_and_ann()
 
