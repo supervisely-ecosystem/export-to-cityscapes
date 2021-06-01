@@ -29,7 +29,7 @@ Supervisely project have to contain only classes with shapes `Polygon` or `Bitma
 
 ## Important notes
 
-1) **Labeled foreground objects must never have holes(Cityscapes format doesn't support them)**, i.e. if there is some background visible through a foreground object, it is considered to a be part of the foreground. If objects in Supervisely format have holes, after export to Cityscapes format holes will be filled with class color, so you may lose some of the input data.
+1) **Labeled foreground objects must never have holes([Cityscapes format doesn't support them](https://www.cityscapes-dataset.com/dataset-overview/#labeling-policy))**, i.e. if there is some background visible through a foreground object, it is considered to a be part of the foreground. If objects in Supervisely format have holes, after export to Cityscapes format holes will be filled with class color, so you may lose some of the input data.
 
 <p align="center">
 <img src="https://i.imgur.com/AzgqBN8.png" width="600px"/>
