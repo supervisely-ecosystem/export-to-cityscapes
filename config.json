@@ -2,6 +2,7 @@
   "name": "Export to Cityscapes",
   "type": "app",
   "categories": [
+    "images",
     "export"
   ],
   "description": "Converts Supervisely annotations to Cityscapes format and prepares downloadable tar archive",
