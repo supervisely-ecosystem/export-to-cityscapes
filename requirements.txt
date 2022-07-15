@@ -1,3 +1,3 @@
-supervisely==6.23.0
+supervisely==6.35.0
 numpy
 Pillow
