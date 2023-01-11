@@ -265,7 +265,8 @@ def from_sl_to_cityscapes(api: sly.Api, task_id, context, state, app_logger):
     app_logger.info("Result directory is archived")
 
     upload_progress = []
-    remote_archive_path = "/cityscapes_format/{}/{}".format(task_id, ARCHIVE_NAME)
+    remote_archive_path = os.path.join(
+        sly.team_files.RECOMMENDED_EXPORT_PATH, "cityscapes_format/{}/{}".format(task_id, ARCHIVE_NAME))
 
     def _print_progress(monitor, upload_progress):
         if len(upload_progress) == 0:
