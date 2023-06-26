@@ -1,5 +1,5 @@
 <div align="center" markdown>
-<img src="https://i.imgur.com/zlpoZpK.png"/>
+<img src="media/poster (copy 1).png"/>
 
 # From Supervisely to Cityscapes format
 
@@ -31,14 +31,14 @@ Supervisely project have to contain only classes with shapes `Polygon` or `Bitma
 1) **Labeled foreground objects must never have holes([Cityscapes format doesn't support them](https://www.cityscapes-dataset.com/dataset-overview/#labeling-policy))**, i.e. if there is some background visible through a foreground object, it is considered to a be part of the foreground. If objects in Supervisely format have holes, after export to Cityscapes format holes will be filled with class color, so you may lose some of the input data.
 
 <p align="center">
-<img src="https://i.imgur.com/AzgqBN8.png" width="600px"/>
+<img src="media/notes1.png" width="600px"/>
 </p>
 
 2) If `Bitmap` in Supervisely format contain **unconnected components**, this figure will be splitted into separate objects after export to Cityscapes format.
 
 <p align="center">
-<img src="https://i.imgur.com/NxizXUE.png" width="400px"/>
-<img src="https://i.imgur.com/vqGvmXo.png" width="400px"/>
+<img src="media/notes2a.png" width="400px"/>
+<img src="media/notes2b.png" width="400px"/>
 </p>
 
 3) Unlike the standard Cityscapes format, which can contain well-defined classes with well-defined colors and ids, project derived from Supervisely format can contain classes with **any names and colors**. 
@@ -79,14 +79,14 @@ In addition, Cityscapes format implies the presence of train/val datasets, and a
 
 **Step 2**: Open context menu of project -> `Download as` -> `Export to Cityscapes format` 
 
-<img src="https://i.imgur.com/kxVGztq.png" width="600px"/>
+<img src="media/htr2.png" width="600px"/>
 
 
 ## How to use
 After running the application, you will be redirected to the Tasks page. Once application processing has finished, your link for downloading will become available. Click on the file name to download it.
 
-<img src="https://i.imgur.com/5WEh12e.png" width="800px"/>
+<img src="media/htu.png" width="800px"/>
 
 **Note** You can also find your converted project in: Team Files->cityscapes_format->app_id->`projectId_projectName_formatName.tar.gz`
 
-<img src="https://i.imgur.com/5WEh12e.png" width="800px"/>
+<img src="media/htu2.png" width="800px"/>
