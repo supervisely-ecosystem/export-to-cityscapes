@@ -8,6 +8,7 @@ from supervisely.geometry.bitmap import Bitmap
 from supervisely.geometry.polygon import Polygon
 from supervisely.app.v1.app_service import AppService
 from PIL import Image
+import workflow as w
 
 my_app = AppService()
 
@@ -136,6 +137,7 @@ def from_sl_to_cityscapes(api: sly.Api, task_id, context, state, app_logger):
     meta_json = api.project.get_meta(PROJECT_ID)
     meta = sly.ProjectMeta.from_json(meta_json)
     has_bitmap_poly_shapes = False
+    w.workflow_input(api, PROJECT_ID)
     for obj_class in meta.obj_classes:
         if obj_class.geometry_type not in possible_geometries:
             app_logger.warn(
@@ -280,10 +282,10 @@ def from_sl_to_cityscapes(api: sly.Api, task_id, context, state, app_logger):
                                 src=RESULT_ARCHIVE,
                                 dst=remote_archive_path,
                                 progress_cb=lambda m: _print_progress(m, upload_progress))
-
+    w.workflow_output(api, file_info)
     app_logger.info("Uploaded to Team-Files: {!r}".format(file_info.storage_path))
     api.task.set_output_archive(task_id, file_info.id, ARCHIVE_NAME, file_url=file_info.storage_path)
-
+    
     my_app.stop()
 
 
