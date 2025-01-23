@@ -11,18 +11,18 @@
   <a href="#How-To-Use">How To Use</a>
 </p>
 
-[![](https://img.shields.io/badge/slack-chat-green.svg?logo=slack)](https://supervise.ly/slack)
+[![](https://img.shields.io/badge/slack-chat-green.svg?logo=slack)](https://supervisely.com/slack)
 ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/supervisely-ecosystem/export-to-cityscapes)
-[![views](https://app.supervise.ly/img/badges/views/supervisely-ecosystem/export-to-cityscapes.png)](https://supervise.ly)
-[![runs](https://app.supervise.ly/img/badges/runs/supervisely-ecosystem/export-to-cityscapes.png)](https://supervise.ly)
+[![views](https://app.supervisely.com/img/badges/views/supervisely-ecosystem/export-to-cityscapes.png)](https://supervisely.com)
+[![runs](https://app.supervisely.com/img/badges/runs/supervisely-ecosystem/export-to-cityscapes.png)](https://supervisely.com)
 
 </div>
 
 ## Overview
 
-Converts [Supervisely](https://docs.supervise.ly/data-organization/00_ann_format_navi) project to [Cityscapes](https://github.com/mcordts/cityscapesScripts) format and prepares downloadable `tar` archive.
+Converts [Supervisely](https://docs.supervisely.com/data-organization/00_ann_format_navi) project to [Cityscapes](https://github.com/mcordts/cityscapesScripts) format and prepares downloadable `tar` archive.
 
-Supervisely project have to contain only classes with shapes `Polygon` or `Bitmap`. It means that all labeled objects have to be polygons or bitmaps. If your project has classes with other shapes and you would like to convert the shapes of these classes and all corresponding objects (e.g. rectangles to polygons), we recommend to use [`Convert Class Shape`](https://ecosystem.supervise.ly/apps/convert-class-shape) app. 
+Supervisely project have to contain only classes with shapes `Polygon` or `Bitmap`. It means that all labeled objects have to be polygons or bitmaps. If your project has classes with other shapes and you would like to convert the shapes of these classes and all corresponding objects (e.g. rectangles to polygons), we recommend to use [`Convert Class Shape`](https://ecosystem.supervisely.com/apps/convert-class-shape) app. 
 
 
 
@@ -75,7 +75,7 @@ In addition, Cityscapes format implies the presence of train/val datasets, and a
 
 
 ## How To Run 
-**Step 1**: Add app to your team from [Ecosystem](https://ecosystem.supervise.ly/apps/convert-supervisely-to-cityscapes-format) if it is not there.
+**Step 1**: Add app to your team from [Ecosystem](https://ecosystem.supervisely.com/apps/convert-supervisely-to-cityscapes-format) if it is not there.
 
 **Step 2**: Open context menu of project -> `Download as` -> `Export to Cityscapes format` 
 
