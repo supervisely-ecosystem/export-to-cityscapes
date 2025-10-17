@@ -22,7 +22,7 @@
 
 Converts [Supervisely](https://docs.supervisely.com/data-organization/00_ann_format_navi) project to [Cityscapes](https://github.com/mcordts/cityscapesScripts) format and prepares downloadable `tar` archive.
 
-Supervisely project have to contain only classes with shapes `Polygon` or `Bitmap`. It means that all labeled objects have to be polygons or bitmaps. If your project has classes with other shapes and you would like to convert the shapes of these classes and all corresponding objects (e.g. rectangles to polygons), we recommend to use [`Convert Class Shape`](../../../../supervisely-ecosystem/convert-class-shape) app. 
+Supervisely project have to contain only classes with shapes `Polygon` or `Bitmap`. It means that all labeled objects have to be polygons or bitmaps. If your project has classes with other shapes and you would like to convert the shapes of these classes and all corresponding objects (e.g. rectangles to polygons), we recommend to use [`Convert Class Shape`](https://ecosystem.supervisely.com/apps/convert-class-shape) app. 
 
 
 
@@ -75,7 +75,7 @@ In addition, Cityscapes format implies the presence of train/val datasets, and a
 
 
 ## How To Run 
-**Step 1**: Add app to your team from [Ecosystem](../../../../supervisely-ecosystem/convert-supervisely-to-cityscapes-format) if it is not there.
+**Step 1**: Add app to your team from [Ecosystem](https://ecosystem.supervisely.com/apps/convert-supervisely-to-cityscapes-format) if it is not there.
 
 **Step 2**: Open context menu of project -> `Download as` -> `Export to Cityscapes format` 
 
